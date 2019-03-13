@@ -3,10 +3,48 @@ from matrix import *
 
 
 def add_circle( points, cx, cy, cz, r, step ):
-    pass
+    theta = 0
+    butisitacircle = int(1/step)
+    kindof = (2.0 * math.pi) / butisitacircle
+
+    for c in range(butisitacircle):
+        points.append([cx + r *math.sin(c * kindof),cy + r *math.cos(c * kindof),cz,1])
+        points.append([cx + r *math.sin((c+1) * kindof),cy + r *math.cos((c+1) * kindof),cz,1])
+
 
 def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
-    pass
+    bx = x0
+    by = y0
+    c = 0
+    if curve_type == 'bezier':
+        sX = generate_curve_coefs(x0,x1,x2,x3,1)
+        sY = generate_curve_coefs(y0,y1,y2,y3,1)
+        while(c < 1 + step):
+            x = sX[0][0]*c*c*c + sX[0][1]*c*c + sX[0][2]*c + sX[0][3]
+            y = sY[0][0]*c*c*c + sY[0][1]*c*c + sY[0][2]*c + sY[0][3]
+            add_edge(points,bx,by,0,x,y,0)
+            bx = x
+            by = y
+            c += step
+    else:
+        rx0 = x2
+        ry0 = y2
+        rx1 = x3
+        ry1 = y3
+        Cx, Cy = make_hermite(x0, y0, x1, y1, rx0, ry0, rx1, ry1)
+        dt = float(1 / float(step))
+        t = 0.0
+        for i in range(step):
+            x1 = cuboi(t, Cx)
+            y1 = cuboi(t, Cy)
+            t += dt
+            x2 = cuboi(t, Cx)
+            y2 = cuboi(t, Cy)
+            add_edge(points, x1, y1, 0, x2, y2, 0)
+
+def cuboi(t, c):
+    return c[0] * math.pow(t, 3) + c[1] * math.pow(t, 2) + c[2] * t + c[3]
+
 
 
 def draw_lines( matrix, screen, color ):

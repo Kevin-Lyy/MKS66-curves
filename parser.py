@@ -93,13 +93,16 @@ def parse_file( fname, edges, transform, screen, color ):
             matrix_mult( transform, edges )
 
         elif line == 'circle':
-            pass
+            args = lines[c+1].strip().split(' ')
+            add_circle(edges,float(args[0]),float(args[1]),float(args[2]),float(args[3]),0.00666)
 
         elif line == 'hermite':
-            pass
+            args = lines[c+1].strip().split(' ')
+            add_curve(edges,float(args[0]),float(args[1]),float(args[2]),float(args[3]),float(args[4]),float(args[5]),float(args[6]),float(args[7]),666,'hermite')
 
         elif line == 'bezier':
-            pass
+            args = lines[c+1].strip().split(' ')
+            add_curve(edges,float(args[0]),float(args[1]),float(args[2]),float(args[3]),float(args[4]),float(args[5]),float(args[6]),float(args[7]),0.00666,'bezier')
 
         elif line == 'display' or line == 'save':
             clear_screen(screen)
